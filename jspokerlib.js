@@ -79,11 +79,21 @@ class Player {
 
 class Pot {
     constructor() {
-        this.pot = {}
+        this.clearPot()
     }
 
-    addToPot(pos, value) {
-        pot[pos] = value
+    addToPot(pos, phase, value) {
+        if (typeof(this[phase][pos]) === "undefined") {
+            this[phase][pos] = 0
+        }
+        this[phase][pos] += value
+    }
+
+    clearPot() {
+        this.preFlop = []
+        this.flop = []
+        this.turn = []
+        this.river = []
     }
 }
 
@@ -97,8 +107,11 @@ class PokerTable {
         this.burned = []
         this.community = []
         this.currentPlayer = 0
+        this.playersInGame = []
+        this.currentBet = 0
         this.smallBlind = smallBlind
         this.bigBlind = bigBlind
+        this.currentPhase = "dealer"
         this.pot = new Pot()
     }
 
@@ -138,7 +151,7 @@ class PokerTable {
         return pos
     }
 
-    distributeCards() {
+    _distributeCards() {
         //Burn before flop card
         this.burned.push(this.deck.selectTopCard())
 
@@ -172,11 +185,44 @@ class PokerTable {
         this.community.push(this.deck.selectTopCard())
     }
 
-    getBlinds() {
-        var smallBlindPos = this.nextPlayer(this.button)
-        var bigBlindPos = this.nextPlayer(smallBlindPos)
-        this.players[smallBlindPos] -= this.smallBlind;
-        this.players[bigBlindPos] -= this.bigBlind;
+    _getBlinds() {
+        //Small blind bet
+        this.currentPlayer = this.nextPlayer(this.button)
+        this.players[this.currentPlayer].money -= this.smallBlind;
+        this.pot.addToPot(this.currentPlayer, "preFlop", this.smallBlind)
+
+        //Big blind bet
+        this.currentPlayer = this.nextPlayer(this.currentPlayer)
+        this.players[this.currentPlayer].money -= this.bigBlind;
+        this.pot.addToPot(this.currentPlayer, "preFlop", this.bigBlind)
+    }
+
+    getTableSum() {
+        var sum = 0
+        for (var player of this.players) {
+            sum += player.money
+        }
+        for (var bet of this.pot.preFlop) {
+            sum += bet
+        }
+        for (var bet of this.pot.flop) {
+            sum += bet
+        }
+        for (var bet of this.pot.turn) {
+            sum += bet
+        }
+        for (var bet of this.pot.river) {
+            sum += bet
+        }
+        return sum
+    }
+
+    getButtonName() {
+        return this.players[this.button].name
+    }
+
+    getCurrentPlayerName() {
+        return this.players[this.currentPlayer].name
     }
 
     startGame() {
@@ -188,12 +234,69 @@ class PokerTable {
         }
         this.gameStarted = true
         this.deck.shuffle()
-        this.distributeCards()
-        this.getBlinds()
+        this.playersInGame
+        this._distributeCards()
+        this._getBlinds()
+        this._startPreFlop()
+    }
+
+    nextPhase() {
+        switch (currentPhase) {
+            case "dealer":
+                _startPreFlop()
+                break
+            case "preFlop":
+                _startFlop()
+                break
+            case "flop":
+                _startTurn()
+                break
+            case "turn":
+                _startRiver()
+                break
+            default:
+                throw new Exception("NoMorePhases", "No more phases on this game.")
+                break
+        }
+    }
+
+    _startPreFlop() {
+        //Next player to big blind
+        this.currentPlayer = this.nextPlayer(this.currentPlayer)
+        this.currentBet = 0
+        this.currentPhase = "preFlop"
+    }
+
+    _startFlop() {
+        this.currentPlayer = smallBlind
+        this.currentBet = 0
+        this.currentPhase = "flop"
+    }
+
+    _startTurn() {
+        this.currentPlayer = smallBlind
+        this.currentBet = 0
+        this.currentPhase = "turn"
+    }
+
+    _startRiver() {
+        this.currentPlayer = smallBlind
+        this.currentBet = 0
+        this.currentPhase = "river"
+    }
+
+    bet(name, value) {
+        var pos = this.getPositionByName(name)
+        if (pos !== this.currentPlayer) {
+            throw new Exception("NotYourTurn", "It is not your turn, " + name + ".")
+        }
+        if (value < this.currentBet) {
+            throw new Exception("TooLowBet", "The current bet is " + bet + ". Please make a higher bet.")
+        }
+        //implement next player
     }
 }
 
 exports.PokerTable = PokerTable
-exports.Deck = Deck
 exports.Rank = Rank
 exports.Suit = Suit

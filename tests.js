@@ -2,7 +2,6 @@ var chai = require("chai")
 var expect = chai.expect
 var jspokerlib = require("./jspokerlib.js")
 var PokerTable = jspokerlib.PokerTable
-var Deck = jspokerlib.Deck
 var Rank = jspokerlib.Rank
 var Suit = jspokerlib.Suit
 
@@ -75,6 +74,22 @@ describe("PokerTable", () => {
             expect(pokerTable.players.length).to.equal(2)
         })
 
+        it("should have 2 cards each one after game started", () => {
+            var pokerTable = new PokerTable(1000, 10, 20)
+            pokerTable.addPlayer("jonas")
+            pokerTable.addPlayer("roland")
+            pokerTable.addPlayer("susan")
+            pokerTable.startGame()
+            var twoCards = true
+            for (var player of pokerTable.players) {
+                twoCards = player.cards.length == 2
+                if (!twoCards)
+                    break
+            }
+            expect(twoCards).to.true
+        })
+
+
         it("should not let add more then 10 players", () => {
             var pokerTable = new PokerTable(1000, 10, 20)
             pokerTable.addPlayer("jonas")
@@ -123,6 +138,14 @@ describe("PokerTable", () => {
             } catch (err) {
                 expect(err.id).to.equal("GameAlreadyStarted")
             }
+        })
+
+        it("should have exact money of 2 buyins in a table with 2 players after game started (and blinds collected)", () => {
+            var pokerTable = new PokerTable(1000, 10, 20)
+            pokerTable.addPlayer("roland")
+            pokerTable.addPlayer("susan")
+            pokerTable.startGame()
+            expect(pokerTable.getTableSum()).to.equal(2000)
         })
     })
 
