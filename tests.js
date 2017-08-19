@@ -5,6 +5,16 @@ var PokerTable = jspokerlib.PokerTable
 var Rank = jspokerlib.Rank
 var Suit = jspokerlib.Suit
 
+var names = ["Roland", "Susan", "Jonas", "Thorin", "Eddie", "Jack", "Detta", "Oi", "Cuthbert", "Steven", "Roy"]
+
+function addPlayersToTable(pokerTable, n) {
+    if (n <= names.length) {
+        for (var i = 0; i < n; i++) {
+            pokerTable.addPlayerToTable(names[i])
+        }
+    }
+}
+
 describe("PokerTable", () => {
     it("should have buyin as the same value of the constructor argument", () => {
         var buyin = parseInt(Math.random() * 1000)
@@ -19,11 +29,9 @@ describe("PokerTable", () => {
             expect(pokerTable.getNumberOfPlayers()).to.equal(0)
         })
 
-        it("should have the number of players 3 after three players added with the addPlayer method", () => {
+        it("should have the number of players 3 after three players added with the addPlayerToTable method", () => {
             var pokerTable = new PokerTable(1000, 10, 20)
-            pokerTable.addPlayer("jonas")
-            pokerTable.addPlayer("roland")
-            pokerTable.addPlayer("susan")
+            addPlayersToTable(pokerTable, 3)
             expect(pokerTable.getNumberOfPlayers()).to.equal(3)
         })
 
@@ -39,7 +47,7 @@ describe("PokerTable", () => {
 
         it("should not let game start with 1 players", () => {
             var pokerTable = new PokerTable(1000, 10, 20)
-            pokerTable.addPlayer("roland")
+            addPlayersToTable(pokerTable, 1)
             try {
                 pokerTable.startGame()
             } catch (err) {
@@ -50,8 +58,7 @@ describe("PokerTable", () => {
 
         it("should let game start with 2 players", () => {
             var pokerTable = new PokerTable(1000, 10, 20)
-            pokerTable.addPlayer("roland")
-            pokerTable.addPlayer("susan")
+            addPlayersToTable(pokerTable, 2)
             try {
                 pokerTable.startGame()
             } catch (err) {
@@ -63,11 +70,10 @@ describe("PokerTable", () => {
 
         it("should not let add player with game started", () => {
             var pokerTable = new PokerTable(1000, 10, 20)
-            pokerTable.addPlayer("jonas")
-            pokerTable.addPlayer("roland")
+            addPlayersToTable(pokerTable, 2)
             pokerTable.startGame()
             try {
-                pokerTable.addPlayer("susan")
+                pokerTable.addPlayerToTable("Susan")
             } catch (err) {
                 expect(err.id).to.equal("GameStartedException")
             }
@@ -76,9 +82,7 @@ describe("PokerTable", () => {
 
         it("should have 2 cards each one after game started", () => {
             var pokerTable = new PokerTable(1000, 10, 20)
-            pokerTable.addPlayer("jonas")
-            pokerTable.addPlayer("roland")
-            pokerTable.addPlayer("susan")
+            addPlayersToTable(pokerTable, 3)
             pokerTable.startGame()
             var twoCards = true
             for (var player of pokerTable.players) {
@@ -92,23 +96,14 @@ describe("PokerTable", () => {
 
         it("should not let add more then 10 players", () => {
             var pokerTable = new PokerTable(1000, 10, 20)
-            pokerTable.addPlayer("jonas")
-            pokerTable.addPlayer("roland")
-            pokerTable.addPlayer("susan")
-            pokerTable.addPlayer("thorin")
-            pokerTable.addPlayer("eddie")
-            pokerTable.addPlayer("jack")
-            pokerTable.addPlayer("detta")
-            pokerTable.addPlayer("oi")
-            pokerTable.addPlayer("cuthbert")
-            pokerTable.addPlayer("steven")
+            addPlayersToTable(pokerTable, 10)
             try {
-                pokerTable.addPlayer("roy")
+                pokerTable.addPlayerToTable("Roy")
             } catch (err) {
                 expect(err.id).to.equal("FullTableException")
             }
             try {
-                pokerTable.addPlayer("henry")
+                pokerTable.addPlayerToTable("Henry")
             } catch (err) {
                 expect(err.id).to.equal("FullTableException")
             }
@@ -117,21 +112,20 @@ describe("PokerTable", () => {
 
         it("should not let add two players with same name", () => {
             var pokerTable = new PokerTable(1000, 10, 20)
-            pokerTable.addPlayer("roland")
+            addPlayersToTable(pokerTable, 1)
             try {
-                pokerTable.addPlayer("roland")
+                pokerTable.addPlayerToTable("Roland")
             } catch (err) {
                 expect(err.id).to.equal("SameNameException")
             }
-            pokerTable.addPlayer("susan")
+            pokerTable.addPlayerToTable("Susan")
             expect(pokerTable.players.length).to.equal(2)
         })
     })
     describe("Game", () => {
         it("should not let game start without finish a already started game first", () => {
             var pokerTable = new PokerTable(1000, 10, 20)
-            pokerTable.addPlayer("roland")
-            pokerTable.addPlayer("susan")
+            addPlayersToTable(pokerTable, 2)
             pokerTable.startGame()
             try {
                 pokerTable.startGame()
@@ -142,8 +136,7 @@ describe("PokerTable", () => {
 
         it("should have exact money of 2 buyins in a table with 2 players after game started (and blinds collected)", () => {
             var pokerTable = new PokerTable(1000, 10, 20)
-            pokerTable.addPlayer("roland")
-            pokerTable.addPlayer("susan")
+            addPlayersToTable(pokerTable, 2)
             pokerTable.startGame()
             expect(pokerTable.getTableSum()).to.equal(2000)
         })
@@ -177,10 +170,7 @@ describe("PokerTable", () => {
 
         it("should have 36 cards after game is starded in a table with 4 players", () => {
             var pokerTable = new PokerTable(1000, 10, 20)
-            pokerTable.addPlayer("jonas")
-            pokerTable.addPlayer("roland")
-            pokerTable.addPlayer("susan")
-            pokerTable.addPlayer("cuthbert")
+            addPlayersToTable(pokerTable, 4)
             pokerTable.startGame()
             expect(pokerTable.deck.cards.length).to.equal(36)
         })
@@ -189,8 +179,7 @@ describe("PokerTable", () => {
     describe("Community", () => {
         it("should have 5 cards after game is started", () => {
             var pokerTable = new PokerTable(1000, 10, 20)
-            pokerTable.addPlayer("jonas")
-            pokerTable.addPlayer("roland")
+            addPlayersToTable(pokerTable, 2)
             pokerTable.startGame()
             expect(pokerTable.community.length).to.equal(5)
         })
