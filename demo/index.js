@@ -1,4 +1,5 @@
-var jspokerlib = require("../jspokerlib.js")
+var jspokerlib = require("../src/jspokerlib.js")
+console.log(jspokerlib)
 var PokerTable = jspokerlib.PokerTable
 
 var pokerTable = new PokerTable(1000, 10, 20)
@@ -106,8 +107,6 @@ try {
     bet("Susan", 0)
     bet("Alain", 0)
     bet("Roland", 0)
-
-
 } catch (err) {
     throw err.message
 }

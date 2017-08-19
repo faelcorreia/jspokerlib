@@ -1,6 +1,6 @@
 # jspokerlib
 ## A full Texas Hold'em API.
 
-Import with `require("./jspokerlib.js")`.
-
-Test with mocha.
+- Import with `require("./src/jspokerlib.js")`.
+- Compile the browser version with `gulp browser`.
+- Test with `mocha tests.js`.

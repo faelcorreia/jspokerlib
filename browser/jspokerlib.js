@@ -1,3 +1,4 @@
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 const Suit = {
     CLUBS: { id: 0, name: "Clubs" },
     DIAMONDS: { id: 1, name: "Diamonds" },
@@ -19,13 +20,6 @@ const Rank = {
     JACK: { id: 10, name: "Jack" },
     QUEEN: { id: 11, name: "Queen" },
     KING: { id: 12, name: "King" }
-}
-
-class Exception {
-    constructor(id, message) {
-        this.message = message;
-        this.id = id;
-    }
 }
 
 class Card {
@@ -66,6 +60,18 @@ class Deck {
     }
 }
 
+exports.Suit = Suit
+exports.Rank = Rank
+exports.Card = Card
+exports.Deck = Deck
+},{}],2:[function(require,module,exports){
+PokerTable = require("./pokertable.js").PokerTable
+card = require("./card.js")
+
+exports.PokerTable = PokerTable
+exports.Rank = card.Rank
+exports.Suit = card.Suit
+},{"./card.js":1,"./pokertable.js":4}],3:[function(require,module,exports){
 class Player {
     constructor(money, name) {
         this.money = money
@@ -95,6 +101,23 @@ class Player {
 
     getCurrentValueFromPlayer(phase) {
         return this.pot[phase]
+    }
+}
+
+exports.Player = Player
+},{}],4:[function(require,module,exports){
+card = require("./card.js")
+player = require("./player.js")
+
+var Rank = card.Rank
+var Suit = card.Suit
+var Deck = card.Deck
+var Player = player.Player
+
+class Exception {
+    constructor(id, message) {
+        this.message = message;
+        this.id = id;
     }
 }
 
@@ -451,6 +474,5 @@ class PokerTable {
     }
 }
 
-exports.PokerTable = PokerTable
-exports.Rank = Rank
-exports.Suit = Suit
+module.exports.PokerTable = PokerTable
+},{"./card.js":1,"./player.js":3}]},{},[2])
