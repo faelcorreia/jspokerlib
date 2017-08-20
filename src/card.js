@@ -6,19 +6,19 @@ const Suit = {
 }
 
 const Rank = {
-    ACE: { id: 0, name: "Ace" },
-    TWO: { id: 1, name: "Two" },
-    THREE: { id: 2, name: "Three" },
-    FOUR: { id: 3, name: "Four" },
-    FIVE: { id: 4, name: "Five" },
-    SIX: { id: 5, name: "Six" },
-    SEVEN: { id: 6, name: "Seven" },
-    EIGHT: { id: 7, name: "Eight" },
-    NINE: { id: 8, name: "Nine" },
-    TEN: { id: 9, name: "Ten" },
-    JACK: { id: 10, name: "Jack" },
-    QUEEN: { id: 11, name: "Queen" },
-    KING: { id: 12, name: "King" }
+    TWO: { id: 0, name: "Two" },
+    THREE: { id: 1, name: "Three" },
+    FOUR: { id: 2, name: "Four" },
+    FIVE: { id: 3, name: "Five" },
+    SIX: { id: 4, name: "Six" },
+    SEVEN: { id: 5, name: "Seven" },
+    EIGHT: { id: 6, name: "Eight" },
+    NINE: { id: 7, name: "Nine" },
+    TEN: { id: 8, name: "Ten" },
+    JACK: { id: 9, name: "Jack" },
+    QUEEN: { id: 10, name: "Queen" },
+    KING: { id: 11, name: "King" },
+    ACE: { id: 12, name: "Ace" }
 }
 
 class Card {

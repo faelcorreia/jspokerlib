@@ -1,10 +1,12 @@
 card = require("./card.js")
 player = require("./player.js")
+comparator = require("./comparator.js")
 
 var Rank = card.Rank
 var Suit = card.Suit
 var Deck = card.Deck
 var Player = player.Player
+var Comparator = comparator.Comparator
 
 class Exception {
     constructor(id, message) {
@@ -28,6 +30,7 @@ class PokerTable {
         this.bigBlind = bigBlind
         this.currentPhase = "dealer"
         this.alreadyPlayed = 0
+        this.comparator = new Comparator(this)
     }
 
     addPlayerToTable(name) {
